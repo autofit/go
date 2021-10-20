@@ -69,7 +69,6 @@ func TcpId() {
 					Second = t.Second()
 					i = 0
 				}
-				fmt.Println("i=", i, "t.Second():", t.Second(), "Second:", Second)
 				_, err = c.Write([]byte(yearMap[int64(t.Year())] + dateMap[int64(t.Month())] + dateMap[int64(t.Day())] + dateMap[int64(t.Hour())] + dateMap[int64(t.Minute())] + dateMap[int64(t.Second())] + fmt.Sprint(i)))
 				lock.Lock()
 				i++
