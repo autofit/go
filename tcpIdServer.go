@@ -21,10 +21,10 @@ func TcpId() {
 	Second := t.Second()
 	yearMap := make(map[int64]string)
 	dateMap := make(map[int64]string)
-	baseTable := []byte("123456789QWERT#YUIOPASDFGHJKLZXCV|BNMqwertyuiopasdfghjklzxcvbnm0")
-	yearTable := make([]int64, 64)
+	baseTable := []byte("123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopsdfghjklzxcvbnm")
+	yearTable := make([]int64, 60)
 	n := int64(2021)
-	for i := 0; i < 64; i++ {
+	for i := 0; i < 60; i++ {
 		n = int64(2021 + i)
 		yearTable[i] = n
 	}
