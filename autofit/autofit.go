@@ -2,7 +2,6 @@ package autofit
 
 import (
 	"fmt"
-	"github.com/autofit"
 	"log"
 	"net"
 	"sync"
