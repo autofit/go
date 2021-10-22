@@ -6,15 +6,22 @@ go get github.com/autofit/go/autofit
 
 Server Demo
 
+
+
 package main
+
 import (
-"github.com/autofit/go/autofit"
+	"github.com/autofit/go/autofit"
 )
+
 func main() {
+	addr := ":3390"
 	autofit.TcpId()
 }
 
 Client Demo:
+
+
 
 package main
 
@@ -22,8 +29,9 @@ import (
 	"log"
 	"net"
 )
+
 func main() {
-	c, err := net.Dial("tcp", ":9090")
+	c, err := net.Dial("tcp", ":3390")
 	if err != nil {
 		log.Fatalf("Error to open TCP connection: %s", err)
 	}
