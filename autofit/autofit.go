@@ -1,6 +1,20 @@
+package autofit
+
+import (
+	"fmt"
+	"github.com/autofit"
+	"log"
+	"net"
+	"sync"
+	"time"
+)
+
+var i int64 = 0
+var Second int = 0
+
 func TcpId() {
 	t := time.Now()
-	Second := t.Second()
+	Second = t.Second()
 	yearMap := make(map[int64]string)
 	dateMap := make(map[int64]string)
 	baseTable := []byte("123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbn")
@@ -22,6 +36,7 @@ func TcpId() {
 	defer l.Close()
 	var lock sync.RWMutex
 	for {
+		Second = 0
 		c, err := l.Accept()
 		if err != nil {
 			log.Fatalf("Error to accept new connection: %s", err)
@@ -40,11 +55,12 @@ func TcpId() {
 				log.Printf("reading data from client: %s\n", string(d))
 
 				t := time.Now()
+				if t.Second() > 57 {
+					Second = 0
+				}
 				fmt.Println("i=", i, "现在的秒:", t.Second(), "过去的秒:", Second, "==", t.Second() > Second)
+
 				if t.Second() > Second {
-					if t.Second() == 0 {
-						Second = 0
-					}
 					Second = t.Second()
 					i = 0
 				}
