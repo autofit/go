@@ -14,7 +14,7 @@ var (
 	Second int   = 0
 )
 
-func TcpId() {
+func TcpId(addr string) {
 	t := time.Now()
 	Second = t.Second()
 	yearMap := make(map[int64]string)
@@ -31,7 +31,7 @@ func TcpId() {
 		yearMap[int64(yearTable[k])] = string(v)
 	}
 
-	l, err := net.Listen("tcp", ":9090")
+	l, err := net.Listen("tcp", addr)
 	if err != nil {
 		log.Fatalf("Error listener returned: %s", err)
 	}
