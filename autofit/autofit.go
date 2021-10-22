@@ -9,9 +9,13 @@ import (
 )
 
 var (
-	i      int64 = 0
-	x      int   = 0
-	Second int   = 0
+	i int64 = 0
+	x int   = 0
+	//Second int   = 0
+	lock   sync.RWMutex
+	err    error
+	t      = time.Now()
+	Second = t.Second()
 )
 
 func TcpId(addr string) {
@@ -55,6 +59,8 @@ func TcpId(addr string) {
 					log.Printf("Error reading TCP session: %s", err)
 					break
 				}
+				//log.Printf("reading data from client: %s\n", string(d))
+
 				t := time.Now()
 				if t.Second() > 58 {
 					if x == 0 {
@@ -90,4 +96,38 @@ func TcpId(addr string) {
 			defer c.Close()
 		}()
 	}
+}
+func GetId() string {
+	yearMap := make(map[int64]string)
+	dateMap := make(map[int64]string)
+	baseTable := []byte("123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbn")
+	yearTable := make([]int64, 60)
+	n := int64(2021)
+	for i := 0; i < 60; i++ {
+		n = int64(2021 + i)
+		yearTable[i] = n
+	}
+	for k, v := range baseTable {
+		dateMap[int64(k)] = string(v)
+		yearMap[int64(yearTable[k])] = string(v)
+	}
+	t = time.Now()
+	if t.Second() > 58 {
+		if x == 0 {
+			Second = 0
+		}
+		x++
+	}
+	if t.Second() < 1 {
+		x = 0
+	}
+	if t.Second() > Second {
+		Second = t.Second()
+		i = 0
+	}
+	aaa := yearMap[int64(t.Year())] + dateMap[int64(t.Month())] + dateMap[int64(t.Day())] + dateMap[int64(t.Hour())] + dateMap[int64(t.Minute())] + dateMap[int64(t.Second())] + fmt.Sprint(i)
+	lock.Lock()
+	i++
+	lock.Unlock()
+	return aaa
 }
