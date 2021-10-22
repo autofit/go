@@ -5,6 +5,5 @@ import (
 )
 
 func main() {
-	addr := ":3390"
-	autofit.TcpId()
+	autofit.TcpId("9090")
 }
