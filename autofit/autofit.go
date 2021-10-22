@@ -8,8 +8,11 @@ import (
 	"time"
 )
 
-var i int64 = 0
-var Second int = 0
+var (
+	i      int64 = 0
+	x      int   = 0
+	Second int   = 0
+)
 
 func TcpId() {
 	t := time.Now()
@@ -45,7 +48,7 @@ func TcpId() {
 			defer c.Close()
 
 			for {
-				Second = 0
+
 				d := make([]byte, 1024)
 				_, err := c.Read(d)
 				if err != nil {
@@ -55,11 +58,15 @@ func TcpId() {
 				log.Printf("reading data from client: %s\n", string(d))
 
 				t := time.Now()
-				if t.Second() > 57 {
-					Second = 0
+				if t.Second() > 58 {
+					if x == 0 {
+						Second = 0
+					}
+					x++
 				}
-				fmt.Println("i=", i, "现在的秒:", t.Second(), "过去的秒:", Second, "==", t.Second() > Second)
-
+				if t.Second() < 1 {
+					x = 0
+				}
 				if t.Second() > Second {
 					Second = t.Second()
 					i = 0
