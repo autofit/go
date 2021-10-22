@@ -1,14 +1,13 @@
 # go
-code
-A time-based id generator
-征集替代秒后那个累加i60位进制字符串累加函数，要求一个60个字符串map通过轮盘累加原理实现的函数，进一步缩短编码长度。
-go get github.com/autofit/go/autofit
+##A time-based id generator
+##征集替代秒后那个累加i60位进制字符串累加函数，要求一个60个字符串map通过轮盘累加原理实现的函数，进一步缩短编码长度。
+##go get github.com/autofit/go/autofit
 
-Server Demo
-
+##Server Demo
 
 
-package main
+
+`<package main
 
 import (
 	"github.com/autofit/go/autofit"
@@ -16,13 +15,13 @@ import (
 
 func main() {
 	autofit.TcpId("9090")
-}
+}>`
 
-Client Demo:
+##Client Demo:
 
 
 
-package main
+`<package main
 
 import (
 	"log"
@@ -50,3 +49,4 @@ func main() {
 	}
 	log.Printf("reading data from server: %s\n", string(d))
 }
+>`
