@@ -7,7 +7,7 @@
 
 
 
-'```package main
+``package main
 
 import (
 	"github.com/autofit/go/autofit"
@@ -15,13 +15,13 @@ import (
 
 func main() {
 	autofit.TcpId("9090")
-}```'
+}``
 
 ## Client Demo:
 
 
 
-'```package main
+``package main
 
 import (
 	"log"
@@ -48,4 +48,4 @@ func main() {
 		log.Fatalf("Error reading TCP session: %s", err)
 	}
 	log.Printf("reading data from server: %s\n", string(d))
-}```'
+}``
