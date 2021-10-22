@@ -1,23 +1,20 @@
-package autofit
-
-import (
-	"fmt"
-	"log"
-	"net"
-	"sync"
-	"time"
-)
-
-var i int64 = 0
-
 func TcpId() {
 	t := time.Now()
-	year := t.Year()
-	month := t.Month()
-	day := t.Day()
-	Hour := t.Hour()
-	Minute := t.Minute()
 	Second := t.Second()
+	yearMap := make(map[int64]string)
+	dateMap := make(map[int64]string)
+	baseTable := []byte("123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbn")
+	yearTable := make([]int64, 60)
+	n := int64(2021)
+	for i := 0; i < 60; i++ {
+		n = int64(2021 + i)
+		yearTable[i] = n
+	}
+	for k, v := range baseTable {
+		dateMap[int64(k)] = string(v)
+		yearMap[int64(yearTable[k])] = string(v)
+	}
+
 	l, err := net.Listen("tcp", ":9090")
 	if err != nil {
 		log.Fatalf("Error listener returned: %s", err)
@@ -41,32 +38,17 @@ func TcpId() {
 					break
 				}
 				log.Printf("reading data from client: %s\n", string(d))
+
 				t := time.Now()
-				if t.Year() > year {
-					year = t.Year()
-					i = 0
-				}
-				if t.Month() > month {
-					month = t.Month()
-					i = 0
-				}
-				if t.Day() > day {
-					day = t.Day()
-					i = 0
-				}
-				if t.Hour() > Hour {
-					Hour = t.Hour()
-					i = 0
-				}
-				if t.Minute() > Minute {
-					Minute = t.Minute()
-					i = 0
-				}
+				fmt.Println("i=", i, "现在的秒:", t.Second(), "过去的秒:", Second, "==", t.Second() > Second)
 				if t.Second() > Second {
+					if t.Second() == 0 {
+						Second = 0
+					}
 					Second = t.Second()
 					i = 0
 				}
-				_, err = c.Write([]byte(fmt.Sprintf("%d", year)[3:] + fmt.Sprintf("%d", month) + fmt.Sprintf("%d", day) + fmt.Sprintf("%d", Hour) + fmt.Sprintf("%d", Minute) + fmt.Sprintf("%d", Second) + fmt.Sprint(i)))
+				_, err = c.Write([]byte(yearMap[int64(t.Year())] + dateMap[int64(t.Month())] + dateMap[int64(t.Day())] + dateMap[int64(t.Hour())] + dateMap[int64(t.Minute())] + dateMap[int64(t.Second())] + fmt.Sprint(i)))
 				lock.Lock()
 				i++
 				lock.Unlock()
