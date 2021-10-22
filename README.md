@@ -17,11 +17,11 @@ func main() {
 	autofit.TcpId("9090")
 }
 
-## Client Demo:
+// Client Demo
 
 
 
-```package main
+package main
 
 import (
 	"log"
@@ -34,7 +34,6 @@ func main() {
 		log.Fatalf("Error to open TCP connection: %s", err)
 	}
 	defer c.Close()
-	// Part2: write some data to server
 	log.Printf("TCP session open\t", c)
 	b := []byte("0")
 
