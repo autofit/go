@@ -55,8 +55,6 @@ func TcpId(addr string) {
 					log.Printf("Error reading TCP session: %s", err)
 					break
 				}
-				log.Printf("reading data from client: %s\n", string(d))
-
 				t := time.Now()
 				if t.Second() > 58 {
 					if x == 0 {
