@@ -2,7 +2,6 @@ package autofit
 
 import (
 	"fmt"
-	"github.com/autofit"
 	"log"
 	"net"
 	"sync"
@@ -46,6 +45,7 @@ func TcpId() {
 			defer c.Close()
 
 			for {
+				Second = 0
 				d := make([]byte, 1024)
 				_, err := c.Read(d)
 				if err != nil {
