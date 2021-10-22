@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	c, err := net.Dial("tcp", "123.56.60.205:3390")
+	c, err := net.Dial("tcp", ":9090")
 	if err != nil {
 		log.Fatalf("Error to open TCP connection: %s", err)
 	}
