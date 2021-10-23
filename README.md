@@ -3,7 +3,7 @@
 ## 征集替代秒后那个累加i60位进制字符串累加函数，要求一个60个字符串map通过轮盘累加原理实现的函数，进一步缩短编码长度。
 ## go get github.com/autofit/go/autofit
 
-## Server Demo
+## Server Demo & Client.Demo
 
 
 
@@ -17,9 +17,7 @@ func main() {
 	autofit.TcpId("9090")
 }
 
-// Client Demo
-
-
+//client demo
 
 package main
 
@@ -29,15 +27,13 @@ import (
 )
 
 func main() {
-	c, err := net.Dial("tcp", ":3390")
+	c, err := net.Dial("tcp", ":9090")
 	if err != nil {
 		log.Fatalf("Error to open TCP connection: %s", err)
 	}
 	defer c.Close()
 	log.Printf("TCP session open\t", c)
-	b := []byte("0")
-
-	_, err = c.Write(b)
+	_, err = c.Write([]byte("0")
 	if err != nil {
 		log.Fatalf("Error writing TCP session: %s", err)
 	}
