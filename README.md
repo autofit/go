@@ -2,10 +2,15 @@
 ## A time-based id generator
 ## 征集替代秒后那个累加i60位进制字符串累加函数，要求一个60个字符串map通过轮盘累加原理实现的函数，进一步缩短编码长度。
 ## go get github.com/autofit/go/autofit
+## Microcode platform：ai.cofjs.com:81
+##### Platform development is simple：1.reg 2.create project 3.create table 
+##### What you see is what you get.
+##### The language translation system connects across languages.
+##### Provide secondary development interface.
+##### Provide privatized deployment package.
+##### For Internet and Internet of Things development.
 
 ## Server Demo & Client.Demo
-
-
 
 ```package main
 
