@@ -1,5 +1,5 @@
 # go
-## A time-based id generator
+## A time-based Ratchet Algorithm Sequence Code Generator
 ## To collect the 60-digit string accumulation function after replacing the second, it requires a 60 string map to be realized by the principle of roulette accumulation, which further shortens the code length.
 ## go get github.com/autofit/go/autofit
 ## Microcode platform：ai.cofjs.com:81
