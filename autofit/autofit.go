@@ -146,7 +146,7 @@ func GetId() string {
 		Second = t.Second()
 		i = 0
 	}
-	aaa := yearMap[int64(t.Year())] + dateMap[int64(t.Month())] + dateMap[int64(t.Day())] + dateMap[int64(t.Hour())] + dateMap[int64(t.Minute())] + dateMap[int64(t.Second())] + fmt.Sprint(i)
+	aaa := yearMap[int64(t.Year())] + dateMap[int64(t.Month())] + dateMap[int64(t.Day())] + dateMap[int64(t.Hour())] + dateMap[int64(t.Minute())] + dateMap[int64(t.Second())] + Bit62Adder(i)
 	lock.Lock()
 	i++
 	lock.Unlock()
