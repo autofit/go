@@ -97,6 +97,10 @@ func TcpId(addr string) {
 				}
 				_, err = c.Write([]byte(yearMap[int64(t.Year())] + dateMap[int64(t.Month())] + dateMap[int64(t.Day())] + dateMap[int64(t.Hour())] + dateMap[int64(t.Minute())] + dateMap[int64(t.Second())] + Bit62Adder(i)))
 				lock.Lock()
+				if t.Second() > Second {
+					Second = t.Second()
+					i = 0
+				}
 				i++
 				lock.Unlock()
 				if err != nil {
