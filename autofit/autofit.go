@@ -125,9 +125,9 @@ func GetId() string {
 	yearMap := make(map[int64]string)
 	dateMap := make(map[int64]string)
 	baseTable := []byte("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789")
-	yearTable := make([]int64, 60)
+	yearTable := make([]int64, 62)
 	n := int64(2021)
-	for i := 0; i < 60; i++ {
+	for i := 0; i < 62; i++ {
 		n = int64(2021 + i)
 		yearTable[i] = n
 	}
