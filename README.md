@@ -1,6 +1,7 @@
 ## A time-based Ratchet Algorithm Sequence Code Generator
 ## go get github.com/autofit/go/autofit
 ## Microcode platform：ai.cofjs.com:81
+## Encoding server address based on ratcheting technology：ai.cofjs.com:9090
 ##### Platform development is simple：1.reg 2.create project 3.create table 
 ##### What you see is what you get.
 ##### The language translation system connects across languages.
@@ -9,7 +10,7 @@
 ##### For Internet and Internet of Things development.
 #### Update 62bit adder
 ### Server Demo & Client.Demo
-# Encoding server address based on ratcheting technology：ai.cofjs.com:9090
+
 ```package main
 
 import (
