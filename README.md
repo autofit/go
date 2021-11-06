@@ -42,9 +42,9 @@ func main() {
 		log.Fatalf("Error writing TCP session: %s", err)
 	}
 	d := make([]byte, 100)
-	_, err = c.Read(d)
+	n, err := c.Read(d)
 	if err != nil {
 		log.Fatalf("Error reading TCP session: %s", err)
 	}
-	log.Printf("reading data from server: %s\n", string(d))
+	log.Printf("reading data from server: %s\n", string(d[:n]))
 }
