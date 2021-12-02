@@ -1,7 +1,6 @@
 package autofit
 
 import (
-	"fmt"
 	"log"
 	"net"
 	"sync"
@@ -126,9 +125,9 @@ func GetId() string {
 	yearMap := make(map[int64]string)
 	dateMap := make(map[int64]string)
 	baseTable := []byte("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789")
-	yearTable := make([]int64, 60)
+	yearTable := make([]int64, 62)
 	n := int64(2021)
-	for i := 0; i < 60; i++ {
+	for i := 0; i < 62; i++ {
 		n = int64(2021 + i)
 		yearTable[i] = n
 	}
@@ -150,11 +149,10 @@ func GetId() string {
 		Second = t.Second()
 		i = 0
 	}
-	aaa := yearMap[int64(t.Year())] + dateMap[int64(t.Month())] + dateMap[int64(t.Day())] + dateMap[int64(t.Hour())] + dateMap[int64(t.Minute())] + dateMap[int64(t.Second())] + fmt.Sprint(i)
+	aaa := yearMap[int64(t.Year())] + dateMap[int64(t.Month())] + dateMap[int64(t.Day())] + dateMap[int64(t.Hour())] + dateMap[int64(t.Minute())] + dateMap[int64(t.Second())] + Bit62Adder(i)
 	lock.Lock()
-	if t.Second() > Second {
-		Second = t.Second()
-		i = 0
+	if t.Second() < 1 {
+		x = 0
 	}
 	i++
 	lock.Unlock()
