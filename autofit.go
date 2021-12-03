@@ -39,6 +39,7 @@ func Bit62Adder(i int64) string {
 	}
 	return result
 }
+
 func TcpId(addr string) {
 	t := time.Now()
 	Second := t.Second()

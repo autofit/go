@@ -92,7 +92,7 @@ message deviceList {
 }
 
 message  generalList{
-    string temperature       = 1;//值表述方法:0~26
+    string Temperature       = 1;//值表述方法:0~26
     string Volume            = 2;
     string Poslition         = 3;//位置定义,窗帘半开等。
     string Cmd               = 4;//open,close,query,pulse下发一个脉冲
@@ -194,21 +194,25 @@ message farmList{
 }
 message lightList{
     bool Switch                     = 1;//开关
-    repeated workMode WorkMode      = 2;//枚举类型工作模式
+    workMode WorkMode               = 2;//枚举类型工作模式
     uint32 Bright                   = 3;//亮度值
     uint32 Temp                     = 4;//冷暖值
     string Colour                   = 5;//彩光值
-    repeated sceneMode Scene        = 6;//场景值
-    uint32 CountClose               = 7;//倒计时关闭
-    uint32 CountOpen                = 8;//倒计时开启
-    string Control                  = 9;//调节
-    uint32 Sleep                    = 10;//睡眠模式
-    uint32 WakeUp                   = 11;//唤醒模式
-    uint32 PowerMemory              = 12;//断电记忆
-    uint32 DoNotdisturb             = 13;//勿扰模式
-    string  MicMusic                = 14;//麦克风一虐律动
-    string  Music                   = 15;//音乐灯
-    lightExtra lightExtra           = 16;
+    sceneMode Scene                 = 6;//场景值
+    string SceneData                = 7;//场景值
+    string ControlData              = 8;//用于实时下发数据实现实时预览效果
+    uint32 CountClose               = 9;//倒计时关闭
+    uint32 CountOpen                = 10;//倒计时开启
+    string Control                  = 11;//调节
+    uint32 Sleep                    = 12;//睡眠模式
+    uint32 WakeUp                   = 13;//唤醒模式
+    uint32 PowerMemory              = 14;//断电记忆
+    uint32 DoNotdisturb             = 15;//勿扰模式
+    string  MicMusic                = 16;//麦克风音乐律动
+    string  Music                   = 17;//音乐灯
+    string MusicData                = 18;//通过APP内置律动算法实现灯光律动
+    lightExtra LightExtra           = 19;
+
 
 }
 message lightExtra{
@@ -219,13 +223,29 @@ message lightExtra{
     bool SwitchNightLight           = 5;//夜灯开关
     string CycleTiming              = 6;//循环定时
     string RandomTiming             = 7;//随机定时
+    uint32  CountDown               = 16;//倒计时剩余时间
 
 }
 message lightState{
-    
-}
-message airConditioning{
-    
+    uint32 Sleep                    = 1;//睡眠模式
+    uint32 WakeUp                   = 2;//唤醒模式
+    uint32 PowerMemory              = 3;//断电记忆
+    uint32 DoNotdisturb             = 4;//勿扰模式
+    string SceneData                = 5;//场景值
+    bool Switch                     = 6;//开关
+    workMode WorkMode               = 7;//枚举类型工作模
+    uint32 Bright                   = 8;//亮度值
+    uint32 Temp                     = 9;//冷暖值
+    string Colour                   = 10;//彩光值
+    string  MicMusic                = 11;//麦克风音乐律动
+    uint32 SwitchGradint            = 12;//开关渐变色
+    uint32 MixLightScene            = 13;//混光场景
+    string MixRgbcw                 = 14;//混光
+    string SegmentDimming           = 15;//分段调光
+    bool SwitchNightLight           = 16;//夜灯开关
+    string CycleTiming              = 17;//循环定时
+    string RandomTiming             = 18;//随机定时
+    uint32  CountDown               = 19;//倒计时剩余时间
 }
 message airConditioningList {
     bool Switch                                         = 1;
