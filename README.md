@@ -12,6 +12,7 @@
 ### Server Demo & Client.Demo
 ### add a set of IoT data structure
 ### deviceshadow is a Highly abstract IoT data structure
+### Iotdevinterface is a simplified version data interface base deviceshadow 
 
 ```package main
 
