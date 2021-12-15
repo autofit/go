@@ -60,16 +60,17 @@ message BaseCmd {   //替代meet
     string Token        = 14;
 }
 message GateData {
-    string GateId               = 1;
+    string GateId              = 1;
     string Name 				= 2;
-    string UserDefName		    = 3;
-    string UserDefGateName 		= 4;
-    string Token                = 5;
-    string Server               = 6;//服务器地址
-    string BakServer            = 7; //备用服务器地址。
-    string MsgSeq               = 8;
-    repeated cmdSetList CmdSet  = 9;
-    repeated deviceList Device  = 10;//网关下的设备列表
+    string DefName		    	= 3;
+    string DefKey				= 4;
+    string DefValue				= 5;
+    string Token               = 6;
+    string Server              = 7;//服务器地址
+    string BakServer           = 8; //备用服务器地址。
+    string MsgSeq              = 9;
+    repeated cmdSetList CmdSet = 10;
+    repeated deviceList Device = 11;//网关下的设备列表
     
 }
 message cmdSetList{
@@ -77,36 +78,85 @@ message cmdSetList{
     repeated deviceList Device  = 2;//设备集合
 }
 message CmdDef{
-	 string ParmName         = 1;//计算机参数名称：Temperature,Open,OnlyOpen,Close,switch...
-     string Name             = 2;//展示给客户的直接名字
-     string UserDefName      = 3;//直接使用者定义该命令名字。
-     string Value            = 4;//出去带着默认值，返回由这个参数带回来。没变化这个参数返回空
-     string EnumValue        = 5;//value1|value2|value3|switch,switch值返回true和false 
-     string Range            = 6;//0~100
+	 string ParmName         	= 1;//计算机参数名称：Temperature,Open,OnlyOpen,Close,switch...
+     string Name             	= 2;//展示给客户的直接名字
+     string DefName      	  	= 3;//直接使用者定义该命令名字。
+     string DefKey				= 4;
+    string DefValue 			= 5;
+    string Value            	= 6;//出去带着默认值，返回由这个参数带回来。没变化这个参数返回空
+     string EnumValue        	= 7;//value1|value2|value3|switch,switch值返回true和false 
+     string Range            	= 8;//0~100
      }
 message DevState{
-    string ParmName         = 1;//parm 定义的设备变量，例如co,co2,o2,temperature，lock
-    string Name             = 2;//设备商提供给前端展示的名字，例如二氧化碳浓度,温度，气压,大门锁
-    string UserDefName      = 3;//用户定义该设备的名字，例如，卧室二氧化碳浓度，室外温度等
-    string Value            = 4;//当前参数，浓度、压力、ng/m3，温度，亮度，开关量，锁的关，开，虚掩等。
-    string DevType          = 5;//属性
-    string DevIp            = 6;//设备内部ipaddr
-    string DevPort          = 7;//设备内部接口端口
-    string DevUserName      = 8;//设备登陆用户名
-    string DevPassWord      = 9;//设备登陆密码
+    string ParmName         	= 1;//parm 定义的设备变量，例如co,co2,o2,temperature，lock
+    string Name              	= 2;//设备商提供给前端展示的名字，例如二氧化碳浓度,温度，气压,大门锁
+    string DefName      	 	= 3;//用户定义该设备的名字，例如，卧室二氧化碳浓度，室外温度等
+    string DefKey 				= 4;
+    string DefValue 			= 5;
+    string Value            	= 6;//当前参数，浓度、压力、ng/m3，温度，亮度，开关量，锁的关，开，虚掩等。
+    string DevType          	= 7;//属性
+    string DevIp            	= 8;//设备内部ipaddr
+    string DevPort          	= 9;//设备内部接口端口
+    string DevUserName      	= 10;//设备登陆用户名
+    string DevPassWord      	= 11;//设备登陆密码
 
 }
 message deviceList {
-    string DeviceId                             = 1;
-    string Name                                 = 2;
-    string UserDefName                          = 3;//用户自定义该设备，当该设备被定义，前端展示改信息
-    string Category                             = 4;//设备属于那类设备,例如制冷,锁,传感器
-    string Sleep                                = 5;//当前延时多久触发
-    string Touch                                = 6;//给设备启动后触发其他设备,多设备格式:id:time,id:time
-    string MsgSeq                               = 7;
-	CmdDef Command                              = 8;
-    DevState State                              = 9;
+    string DeviceId                            = 1;
+    string Name                                = 2;
+    string UserDefName                         = 3;//用户自定义该设备，当该设备被定义，前端展示改信息
+    string DefKey								= 4;	
+    string DefValue 							= 5;
+    string Category                            = 6;//设备属于那类设备,例如制冷,锁,传感器
+    string Sleep                               = 7;//当前延时多久触发
+    string Touch                               = 8;//给设备启动后触发其他设备,多设备格式:id:time,id:time
+    string MsgSeq                              = 9;
+	CmdDef Command                             = 10;
+    DevState State                             = 11;
     }
+message AudioController {
+	string Name 					= 1;
+	string DefName					= 2;
+	InOut Volume 					= 3;
+	InOut Mute 						= 4;
+	InOut Level 					= 5;
+}
+message InOut {
+	string Name 					= 1;
+	repeated CmdParm OutPut 		= 2;
+	repeated CmdParm InPut 			= 3;
+}
+
+message CmdParm{
+	string Name 					= 1;
+	string Chanel 					= 2;
+	string Value 					= 3;
+	string Id 						= 4;
+	string DefId 					= 5;
+	string Join  					= 6;//1~2000
+	string DefJoin 					= 7;
+	string Press 					= 8;
+	string Switch 					= 9;
+	string PressSwitchMode 			= 10;//Press,Switch,当press,双色切换按键，Switch左右切换按键 
+	string Sort						= 11;//顺序，逆序两个值
+}
+
+message CentralController{
+	string Name 					= 1;
+	string DefName 					= 2;
+	repeated CmdParm Parm 			= 3;
+}
+message Power {
+	string Name 					= 1;
+	string DefName 					= 2;
+	repeated CmdParm Parm 			= 3;
+}
+message RecordDevice {
+	string Name 					= 1;
+	string DefName 					= 2;
+	repeated CmdParm ChanelParm 	= 3;
+	repeated CmdParm ActiveParm	 	= 4;//4个
+}
 //Server->Gateway
 //pub: c/v1/login/${DeviceId}
 //sub: c/v1/login/${DeviceId}
