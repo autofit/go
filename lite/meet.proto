@@ -1,0 +1,53 @@
+syntax = "proto3";
+//Multimedia control parameters
+//每个参数直接给出所有的输入值列表，枚举a|b|c,范围a~b,当前值最后$分割
+package lite;
+
+message AudioController {
+	string Name 					= 1;
+	string DefName					= 2;
+	InOut Volume 					= 3;
+	InOut Mute 						= 4;
+	InOut Level 					= 5;
+}
+message InOut {
+	string Name 					= 1;
+	repeated CmdParm OutPut 		= 2;
+	repeated CmdParm InPut 			= 3;
+}
+
+message CmdParm{
+	string Name 					= 1;
+	string Chanel 					= 2;
+	string Value 					= 3;
+	string Id 						= 4;
+	string DefId 					= 5;
+	string Join  					= 6;//1~2000
+	string DefJoin 					= 7;
+	string Press 					= 8;
+	string Switch 					= 9;
+	string PressSwitchMode 			= 10;//Press,Switch,当press,双色切换按键，Switch左右切换按键 
+	string Sort						= 11;//顺序，逆序两个值
+}
+
+message CentralController{
+	string Name 					= 1;
+	string DefName 					= 2;
+	repeated CmdParm Parm 			= 3;
+}
+message Power {
+	string Name 					= 1;
+	string DefName 					= 2;
+	repeated CmdParm Parm 			= 3;
+}
+message RecordDevice {
+	string Name 					= 1;
+	string DefName 					= 2;
+	repeated CmdParm ChanelParm 	= 3;
+	repeated CmdParm ActiveParm	 	= 4;//4个
+}
+message VideoConteroller {
+	repeated CmdParm Key 			= 1;
+}
+
+
