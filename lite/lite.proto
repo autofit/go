@@ -82,8 +82,8 @@ message CmdDef{
      string Name             	= 2;//展示给客户的直接名字
      string DefName      	  	= 3;//直接使用者定义该命令名字。
      string DefKey				= 4;
-    string DefValue 			= 5;
-    string Value            	= 6;//出去带着默认值，返回由这个参数带回来。没变化这个参数返回空
+     string DefValue 			= 5;
+     string Value            	= 6;//出去带着默认值，返回由这个参数带回来。没变化这个参数返回空
      string EnumValue        	= 7;//value1|value2|value3|switch,switch值返回true和false 
      string Range            	= 8;//0~100
      }
@@ -105,8 +105,8 @@ message deviceList {
     string DeviceId                            = 1;
     string Name                                = 2;
     string UserDefName                         = 3;//用户自定义该设备，当该设备被定义，前端展示改信息
-    string DefKey								= 4;	
-    string DefValue 							= 5;
+    string DefKey							   = 4;	
+    string DefValue                            = 5;
     string Category                            = 6;//设备属于那类设备,例如制冷,锁,传感器
     string Sleep                               = 7;//当前延时多久触发
     string Touch                               = 8;//给设备启动后触发其他设备,多设备格式:id:time,id:time
@@ -129,16 +129,19 @@ message InOut {
 
 message CmdParm{
 	string Name 					= 1;
-	string Chanel 					= 2;
-	string Value 					= 3;
-	string Id 						= 4;
-	string DefId 					= 5;
-	string Join  					= 6;//1~2000
-	string DefJoin 					= 7;
-	string Press 					= 8;
-	string Switch 					= 9;
-	string PressSwitchMode 			= 10;//Press,Switch,当press,双色切换按键，Switch左右切换按键 
-	string Sort						= 11;//顺序，逆序两个值
+    string DefName                  = 2;
+    string DefKey                   = 3;    
+    string DefValue                 = 4;
+	string Chanel 					= 5;
+	string Value 					= 6;
+	string Id 						= 7;
+	string DefId 					= 8;
+	string Join  					= 9;//1~2000
+	string DefJoin 					= 10;
+	string Press 					= 11;
+	string Switch 					= 12;
+	string PressSwitchMode 			= 13;//Press,Switch,当press,双色切换按键，Switch左右切换按键 
+	string Sort						= 14;//顺序，逆序两个值
 }
 
 message CentralController{
