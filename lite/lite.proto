@@ -1,0 +1,287 @@
+syntax = "proto3";
+
+package lite;
+//----------------------------------注册----------------------------
+//Gateway->Server
+//pub: s/v1/reg
+//sub: s/v1/reg topic =reg payload=meet|data,初始key 加密后的meening+纳秒时间戳
+
+message DeviceregReq {    
+    string DeviceType         = 1;//1网关，2终端
+    string DeviceRegCode      = 2;//代表设备生产商家
+    string DeviceId           = 3;//用uuid替代。
+    string MsgSeq             = 4;//取用id服务器随机码
+    string TempId             = 5;
+}
+
+//Server->Gateway
+//pub: c/v1/reg/${DeviceId}
+//sub: c/v1/reg/${DeviceId}//同上加密算法
+
+message DeviceregResp {
+    string DeviceType        = 1;
+    string DeviceId          = 2;//服务器产生的ID
+    string BrokerAddr        = 3;//登陆服务器
+    string MsgSeq            = 4;//上面的那个msgseg
+    string ServerPublicKey   = 5;
+    string PrivateKey        = 6;
+    string Error             = 7;
+}
+//----------------------------------时间同步----------------------------
+//登陆前进行时间校准
+//Gateway->Server
+//pub: s/v1/time/${DeviceId}
+//sub: s/v1/time topic =reg payload=meet|data,初始key 加密后的meening+纳秒时间戳
+
+//Server->Gateway
+//pub: c/v1/time/${DeviceId}
+//sub: c/v1/time/${DeviceId}//同上加密算法
+
+//----------------------------------登录----------------------------
+//Gateway->Server
+//pub: s/v1/login
+//sub: s/v1/login 
+//topic data:椭圆加密的数据，数据内容如下：
+message Pj {
+	string Topic        	= 1;//string `json:"topic,omitempty"`
+	string Token        	= 2;//string `json:"token,omitempty"`
+	string Project      	= 3;//string `json:"project",omitempty`
+	string Table        	= 4;//string `json:"table",omitempty`
+	string Source       	= 5;//string `json:"source",omitempty`
+	string PayLoad      	= 6;//string `json:"payload,omitempty"`
+	string Error        	= 7;//string `json:"error,omitempty"`
+	string Msg          	= 8;//string `json:"message,omitempty"`
+	string ShadowMode    	= 9;//string `json:"shadowmode,omitempty"`
+	string SourceShadow 	= 10;//string `json:"sourceshadow,omitempty"`
+	string FormatShadow 	= 11;//string `json:"colshadow,omitempty"` //特别注意此处映射不一样，方面前端正确读取。
+	string Admin        	= 12;//string `json:"admin,omitempty"`
+	string MsgSeq       	= 13;//string `json:"msgseq,omitempty"` //msgseq 随机数
+	string RequestPath  	= 14;//string `json:"requestpath,omitempty"`
+	string Cmd          	= 15;//string `json:"cmd,omitempty"`
+	string GateId       	= 16;//string `json:"gateid,omitempty"`
+	string DeviceId     	= 17;//string `json:"deviceid,omitempty"`
+	string Parameter    	= 18;//string `json:"parameter,omitempty"`
+	string ErrorMsg     	= 19;//string `json:"errormsg,omitempty"`
+	string RoomId       	= 20;//string `json:"roomid,omitempty"`
+	string RoomName     	= 21;//string `json:"roomname,omitempty"`
+	string RoomAddr     	= 22;//string `json:"roomaddr,omitempty"`
+}
+message BaseCmd {   //替代meet 
+    string DeviceType   = 1;
+    string DeviceId     = 2;
+    string Ip           = 3;
+    string MsgSeq       = 4;
+    string Mark         = 5;//0-单指令,1-指令序列,2-设备列表
+    string Cmd          = 6;//指令集
+    string DeviceList   = 7;//设备列表,服务器和网关沟通列表
+    string Data         = 8;//返回查询数据，数据格式额外定义
+    string ServerId     = 9;//客户服务器地址
+    string UserName     = 10;//绑定时候的客户参数
+    string Error        = 11;//错误代码
+    string BrokerAddr   = 12;//登陆服务器
+    string GateId       = 13;//自己的ID
+    string Token        = 14;
+}
+message GateData {
+    string GateId              = 1;
+    string Name 				= 2;
+    string DefName		    	= 3;
+    string DefKey				= 4;
+    string DefValue				= 5;
+    string Token               = 6;
+    string Server              = 7;//服务器地址
+    string BakServer           = 8; //备用服务器地址。
+    string MsgSeq              = 9;
+    repeated cmdSetList CmdSet = 10;
+    repeated deviceList Device = 11;//网关下的设备列表
+    
+}
+message cmdSetList{
+    string Cmd                  = 1;//id:cmd:time,id:cmd:time
+    repeated deviceList Device  = 2;//设备集合
+}
+message CmdDef{
+	 string ParmName         	= 1;//计算机参数名称：Temperature,Open,OnlyOpen,Close,switch...
+     string Name             	= 2;//展示给客户的直接名字
+     string DefName      	  	= 3;//直接使用者定义该命令名字。
+     string DefKey				= 4;
+     string DefValue 			= 5;
+     string Value            	= 6;//出去带着默认值，返回由这个参数带回来。没变化这个参数返回空
+     string EnumValue        	= 7;//value1|value2|value3|switch,switch值返回true和false 
+     string Range            	= 8;//0~100
+     }
+message DevState{
+    string ParmName         	= 1;//parm 定义的设备变量，例如co,co2,o2,temperature，lock
+    string Name              	= 2;//设备商提供给前端展示的名字，例如二氧化碳浓度,温度，气压,大门锁
+    string DefName      	 	= 3;//用户定义该设备的名字，例如，卧室二氧化碳浓度，室外温度等
+    string DefKey 				= 4;
+    string DefValue 			= 5;
+    string Value            	= 6;//当前参数，浓度、压力、ng/m3，温度，亮度，开关量，锁的关，开，虚掩等。
+    string DevType          	= 7;//属性
+    string DevIp            	= 8;//设备内部ipaddr
+    string DevPort          	= 9;//设备内部接口端口
+    string DevUserName      	= 10;//设备登陆用户名
+    string DevPassWord      	= 11;//设备登陆密码
+
+}
+message deviceList {
+    string DeviceId                            = 1;
+    string Name                                = 2;
+    string UserDefName                         = 3;//用户自定义该设备，当该设备被定义，前端展示改信息
+    string DefKey							   = 4;	
+    string DefValue                            = 5;
+    string Category                            = 6;//设备属于那类设备,例如制冷,锁,传感器
+    string Sleep                               = 7;//当前延时多久触发
+    string Touch                               = 8;//给设备启动后触发其他设备,多设备格式:id:time,id:time
+    string MsgSeq                              = 9;
+	CmdDef Command                             = 10;
+    DevState State                             = 11;
+    }
+message AudioController {
+	string Name 					= 1;
+	string DefName					= 2;
+	InOut Volume 					= 3;
+	InOut Mute 						= 4;
+	InOut Level 					= 5;
+}
+message InOut {
+	string Name 					= 1;
+	repeated CmdParm OutPut 		= 2;
+	repeated CmdParm InPut 			= 3;
+}
+
+message CmdParm{
+	string Name 					= 1;
+    string DefName                  = 2;
+    string DefKey                   = 3;    
+    string DefValue                 = 4;
+	string Chanel 					= 5;
+	string Value 					= 6;
+	string Id 						= 7;
+	string DefId 					= 8;
+	string Join  					= 9;//1~2000
+	string DefJoin 					= 10;
+	string Press 					= 11;
+	string Switch 					= 12;
+	string PressSwitchMode 			= 13;//Press,Switch,当press,双色切换按键，Switch左右切换按键 
+	string Sort						= 14;//顺序，逆序两个值
+}
+
+message CentralController{
+	string Name 					= 1;
+	string DefName 					= 2;
+	repeated CmdParm Parm 			= 3;
+}
+message Power {
+	string Name 					= 1;
+	string DefName 					= 2;
+	repeated CmdParm Parm 			= 3;
+}
+message RecordDevice {
+	string Name 					= 1;
+	string DefName 					= 2;
+	repeated CmdParm ChanelParm 	= 3;
+	repeated CmdParm ActiveParm	 	= 4;//4个
+}
+//Server->Gateway
+//pub: c/v1/login/${DeviceId}
+//sub: c/v1/login/${DeviceId}
+
+//--------------------------------设备断开遗嘱消息----------------
+//Broker->Server
+//pub: s/v1/disconn
+//sub: s/v1/disconn
+
+message DevicedisconnReq {
+    string DeviceType   = 1;
+    string DeviceId     = 2;
+    string MsgSeq       = 3;
+}
+
+//--------------------------------推送指令----------------------
+
+//Server->Gateway
+//pub: c/v1/sentcmd/${DeviceId} 0-单指令，1-指令序列
+//sub: c/v1/sentcmd/${DeviceId}
+
+
+
+//Gateway->Server
+//pub: s/v1/sentcmd/${ServerId}
+//sub: s/v1/sentcmd/${ServerId}
+
+
+//--------------------------------查询-----------------------
+//Server->Gateway
+//pub: c/v1/query/${DeviceId}
+//sub: c/v1/query/${DeviceId}
+
+
+//Gateway->Server
+//pub: s/v1/query/${ServerId}
+//sub: s/v1/query/${ServerId}
+
+//-------------------------------删除执行指令集-----------------------
+//Server->Gateway
+//pub: c/v1/delcmd/${DeviceId}
+//sub: c/v1/delcmd/${DeviceId}
+
+
+
+//Gateway->Server
+//pub: s/v1/delCmd/${ServerId}
+//sub: s/v1/delCmd/${ServerId}
+
+
+
+//---------------------升级---------------------------
+
+
+//Server->Gateway
+//pub: c/v1/update/${DeviceId}
+//sub: c/v1/update/${DeviceId}
+
+
+//Gateway->Server
+//pub: s/v1/update/${ServerId}
+//sub: s/v1/update/${ServerId}
+
+
+//--------------------------------服务器查询设备列表-----------------------  
+//Server->Gateway
+//pub: c/v1/query_device_list/${DeviceId}
+//sub: c/v1/query_device_list/${DeviceId}
+
+
+
+//Gateway->Server
+//pub: s/v1/query_device_list/${ServerId}
+//sub: s/v1/query_device_list/${ServerId}
+
+
+//--------------------------------设备绑定-----------------------
+
+//Server->Gateway
+//pub: c/v1/bind/${DeviceId}
+//sub: c/v1/bind/${DeviceId}
+
+
+//Gateway->Server
+//pub: s/v1/bind/${ServerId}
+//sub: s/v1/bind/${ServerId}
+//删除注册文件，重启基站
+
+//--------------------------------设备解除绑定-----------------------
+
+//Server->Gateway
+//pub: c/v1/unbind/${DeviceId}
+//sub: c/v1/unbind/${DeviceId}
+
+
+//Gateway->Server
+//pub: s/v1/unbind/${ServerId}
+//sub: s/v1/unbind/${ServerId}
+
+
+
+
