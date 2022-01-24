@@ -1,4 +1,4 @@
-package autofit
+package main
 
 import (
 	"log"
@@ -7,23 +7,34 @@ import (
 	"time"
 )
 
+func main() {
+	go func() {
+		initAdd()
+	}()
+	TcpId(":53291")
+}
+
 var (
-	i int64 = 0
-	x int   = 0
+	Add int64 = 0
+	X   int   = 0
 	//Second int   = 0
-	lock   sync.RWMutex
-	err    error
-	t      = time.Now()
-	Second = t.Second()
+	lock      sync.RWMutex
+	err       error
+	T         = time.Now()
+	Second    = T.Second()
+	yearMap   = make(map[int64]string)
+	dateMap   = make(map[int64]string)
+	baseTable = []byte("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789")
+	yearTable = make([]int64, 62)
+	N         = int64(2021)
+	RAND      = make([]string, 62)
 )
 
 func Bit62Adder(i int64) string {
-	baseTable := []byte("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789")
 	a := string(baseTable[(i/62)%62])
 	b := string(baseTable[(i/(62*62))%62])
 	c := string(baseTable[(i/(62*62*62))%62])
 	d := string(baseTable[(i/(62*62*62*62))%62])
-
 	result := ""
 	switch {
 	case i < 62:
@@ -37,23 +48,20 @@ func Bit62Adder(i int64) string {
 	case i > 14776335 && i < 916132822:
 		result = d + c + b + a + string(baseTable[i%62])
 	}
+
 	return result
 }
+
 func TcpId(addr string) {
-	t := time.Now()
-	Second := t.Second()
-	yearMap := make(map[int64]string)
-	dateMap := make(map[int64]string)
-	baseTable := []byte("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789")
-	yearTable := make([]int64, 62)
-	n := int64(2021)
+
 	for i := 0; i < 62; i++ {
-		n = int64(2021 + i)
-		yearTable[i] = n
+		N = int64(2021 + i)
+		yearTable[i] = N
 	}
 	for k, v := range baseTable {
 		dateMap[int64(k)] = string(v)
 		yearMap[int64(yearTable[k])] = string(v)
+		RAND[k] = string(v)
 	}
 
 	l, err := net.Listen("tcp", addr)
@@ -71,37 +79,16 @@ func TcpId(addr string) {
 		go func() {
 			log.Printf("TCP session open")
 			defer c.Close()
-
 			for {
-
 				d := make([]byte, 1024)
 				_, err := c.Read(d)
 				if err != nil {
 					log.Printf("Error reading TCP session: %s", err)
 					break
 				}
-
-				t := time.Now()
-				if t.Second() > 58 {
-					if x == 0 {
-						Second = 0
-					}
-					x++
-				}
-				if t.Second() < 1 {
-					x = 0
-				}
-				if t.Second() > Second {
-					Second = t.Second()
-					i = 0
-				}
-				_, err = c.Write([]byte(yearMap[int64(t.Year())] + dateMap[int64(t.Month())] + dateMap[int64(t.Day())] + dateMap[int64(t.Hour())] + dateMap[int64(t.Minute())] + dateMap[int64(t.Second())] + Bit62Adder(i)))
+				_, err = c.Write([]byte(yearMap[int64(T.Year())] + dateMap[int64(T.Month())] + dateMap[int64(T.Day())] + dateMap[int64(T.Hour())] + dateMap[int64(T.Minute())] + dateMap[int64(T.Second())] + Bit62Adder(Add)))
 				lock.Lock()
-				if t.Second() > Second {
-					Second = t.Second()
-					i = 0
-				}
-				i++
+				Add++
 				lock.Unlock()
 				if err != nil {
 					log.Printf("Error writing TCP session: %s", err)
@@ -109,52 +96,59 @@ func TcpId(addr string) {
 				}
 			}
 		}()
-
 		go func() {
 			err := c.(*net.TCPConn).SetLinger(0)
 			if err != nil {
 				log.Printf("Error when setting linger: %s", err)
 			}
-
 			<-time.After(time.Duration(10) * time.Second)
 			defer c.Close()
 		}()
 	}
 }
+func initAdd() {
+	for {
+		time.Sleep(1 * time.Second)
+		T = time.Now()
+		if T.Second() == 0 {
+			lock.Lock()
+			Add = 0
+			lock.Unlock()
+
+		}
+	}
+}
 func GetId() string {
-	yearMap := make(map[int64]string)
-	dateMap := make(map[int64]string)
-	baseTable := []byte("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789")
-	yearTable := make([]int64, 62)
-	n := int64(2021)
+
 	for i := 0; i < 62; i++ {
-		n = int64(2021 + i)
-		yearTable[i] = n
+		N = int64(2021 + i)
+		yearTable[i] = N
 	}
 	for k, v := range baseTable {
 		dateMap[int64(k)] = string(v)
 		yearMap[int64(yearTable[k])] = string(v)
 	}
-	t = time.Now()
-	if t.Second() > 58 {
-		if x == 0 {
+	T = time.Now()
+	if T.Second() > 58 {
+		if X == 0 {
 			Second = 0
 		}
-		x++
+		X++
 	}
-	if t.Second() < 1 {
-		x = 0
+	if T.Second() < 1 {
+		X = 0
 	}
-	if t.Second() > Second {
-		Second = t.Second()
-		i = 0
+	if T.Second() > Second {
+		Second = T.Second()
+		Add = 0
 	}
-	aaa := yearMap[int64(t.Year())] + dateMap[int64(t.Month())] + dateMap[int64(t.Day())] + dateMap[int64(t.Hour())] + dateMap[int64(t.Minute())] + dateMap[int64(t.Second())] + Bit62Adder(i)
+	aaa := yearMap[int64(T.Year())] + dateMap[int64(T.Month())] + dateMap[int64(T.Day())] + dateMap[int64(T.Hour())] + dateMap[int64(T.Minute())] + dateMap[int64(T.Second())] + Bit62Adder(Add)
 	lock.Lock()
-	if t.Second() < 1 {
-		x = 0
+	if T.Second() > Second {
+		Second = T.Second()
+		Add = 0
 	}
-	i++
+	Add++
 	lock.Unlock()
 	return aaa
 }
