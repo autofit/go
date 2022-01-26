@@ -1,18 +1,20 @@
-package main
+package autofit
 
 import (
+	///"fmt"
 	"log"
+	"math/rand"
 	"net"
 	"sync"
 	"time"
 )
 
-func main() {
+/*func main() {
 	go func() {
 		initAdd()
 	}()
 	TcpId(":53291")
-}
+}*/
 
 var (
 	Add int64 = 0
@@ -29,7 +31,9 @@ var (
 	N         = int64(2021)
 	RAND      = make([]string, 62)
 )
-
+func init(){
+	
+}
 func Bit62Adder(i int64) string {
 	a := string(baseTable[(i/62)%62])
 	b := string(baseTable[(i/(62*62))%62])
@@ -86,7 +90,13 @@ func TcpId(addr string) {
 					log.Printf("Error reading TCP session: %s", err)
 					break
 				}
-				_, err = c.Write([]byte(yearMap[int64(T.Year())] + dateMap[int64(T.Month())] + dateMap[int64(T.Day())] + dateMap[int64(T.Hour())] + dateMap[int64(T.Minute())] + dateMap[int64(T.Second())] + Bit62Adder(Add)))
+				r := make([]int, 4)
+				for i := 0; i < 4; i++ {
+					rand.Seed((time.Now().UnixNano()))
+					r[i] = rand.Intn(62)
+
+				}
+				_, err = c.Write([]byte(yearMap[int64(T.Year())] + dateMap[int64(T.Month())] + dateMap[int64(T.Day())] + dateMap[int64(T.Hour())] + dateMap[int64(T.Minute())] + dateMap[int64(T.Second())] + Bit62Adder(Add) + ":" + dateMap[int64(T.Hour())+24] + dateMap[int64(T.Minute())] + dateMap[int64(T.Second())] + Bit62Adder(Add) + RAND[r[0]] + RAND[r[1]] + RAND[r[2]] + RAND[r[3]]))
 				lock.Lock()
 				Add++
 				lock.Unlock()
