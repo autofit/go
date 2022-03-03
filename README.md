@@ -1,7 +1,7 @@
 ## A time-based Ratchet Algorithm Sequence Code Generator
 ## go get github.com/autofit/go/autofit
-## Microcode platform：ai.cofjs.com:81
-## Encoding server address based on ratcheting technology：ai.cofjs.com:9090
+## Microcode platform：ai.cofjs.com
+## Encoding server address based on ratcheting technology：ai.cofjs.com:53291
 ##### Platform development is simple：1.reg 2.create project 3.create table 
 ##### What you see is what you get.
 ##### The language translation system connects across languages.
@@ -22,7 +22,7 @@ import (
 )
 
 func main() {
-	autofit.TcpId("9090")
+	autofit.TcpId("53291")
 }
 
 //client demo
@@ -35,7 +35,7 @@ import (
 )
 
 func main() {
-	c, err := net.Dial("tcp", ":9090")
+	c, err := net.Dial("tcp", ":53291")
 	if err != nil {
 		log.Fatalf("Error to open TCP connection: %s", err)
 	}
