@@ -1,25 +1,18 @@
 package autofit
 
 import (
-	///"fmt"
 	"log"
 	"math/rand"
 	"net"
 	"sync"
 	"time"
-)
 
-/*func main() {
-	go func() {
-		initAdd()
-	}()
-	TcpId(":53291")
-}*/
+	"github.com/robfig/cron"
+)
 
 var (
 	Add int64 = 0
 	X   int   = 0
-	//Second int   = 0
 	lock      sync.RWMutex
 	err       error
 	T         = time.Now()
@@ -31,9 +24,7 @@ var (
 	N         = int64(2021)
 	RAND      = make([]string, 62)
 )
-func init(){
-	
-}
+
 func Bit62Adder(i int64) string {
 	a := string(baseTable[(i/62)%62])
 	b := string(baseTable[(i/(62*62))%62])
@@ -57,7 +48,16 @@ func Bit62Adder(i int64) string {
 }
 
 func TcpId(addr string) {
-
+	i := 0
+	c := cron.New()
+	spec := "*/1 * * * *"
+	c.AddFunc(spec, func() {
+		i++
+		lock.Lock()
+		Add = 0
+		lock.Unlock()
+	})
+	c.Start()
 	for i := 0; i < 62; i++ {
 		N = int64(2021 + i)
 		yearTable[i] = N
@@ -67,13 +67,11 @@ func TcpId(addr string) {
 		yearMap[int64(yearTable[k])] = string(v)
 		RAND[k] = string(v)
 	}
-
 	l, err := net.Listen("tcp", addr)
 	if err != nil {
 		log.Fatalf("Error listener returned: %s", err)
 	}
 	defer l.Close()
-	var lock sync.RWMutex
 	for {
 		Second = 0
 		c, err := l.Accept()
@@ -81,9 +79,9 @@ func TcpId(addr string) {
 			log.Fatalf("Error to accept new connection: %s", err)
 		}
 		go func() {
-			log.Printf("TCP session open")
 			defer c.Close()
 			for {
+				T = time.Now()
 				d := make([]byte, 1024)
 				_, err := c.Read(d)
 				if err != nil {
