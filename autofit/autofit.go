@@ -114,18 +114,7 @@ func TcpId(addr string) {
 		}()
 	}
 }
-func initAdd() {
-	for {
-		time.Sleep(1 * time.Second)
-		T = time.Now()
-		if T.Second() == 0 {
-			lock.Lock()
-			Add = 0
-			lock.Unlock()
 
-		}
-	}
-}
 func GetId() string {
 
 	for i := 0; i < 62; i++ {
