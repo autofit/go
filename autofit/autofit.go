@@ -6,13 +6,11 @@ import (
 	"net"
 	"sync"
 	"time"
-
-	"github.com/robfig/cron"
 )
 
 var (
-	Add int64 = 0
-	X   int   = 0
+	Add       int64 = 0
+	X         int   = 0
 	lock      sync.RWMutex
 	err       error
 	T         = time.Now()
@@ -48,16 +46,7 @@ func Bit62Adder(i int64) string {
 }
 
 func TcpId(addr string) {
-	i := 0
-	c := cron.New()
-	spec := "*/1 * * * *"
-	c.AddFunc(spec, func() {
-		i++
-		lock.Lock()
-		Add = 0
-		lock.Unlock()
-	})
-	c.Start()
+
 	for i := 0; i < 62; i++ {
 		N = int64(2021 + i)
 		yearTable[i] = N
@@ -72,19 +61,32 @@ func TcpId(addr string) {
 		log.Fatalf("Error listener returned: %s", err)
 	}
 	defer l.Close()
+	go func() {
+		ticker := time.NewTicker(1 * time.Second)
+		for range ticker.C {
+			if T.Second() < time.Now().Second() {
+				T = time.Now()
+				lock.Lock()
+				Add = 0
+				lock.Unlock()
+			}
+		}
+	}()
+
 	for {
 		Second = 0
 		c, err := l.Accept()
 		if err != nil {
 			log.Fatalf("Error to accept new connection: %s", err)
 		}
+		defer c.Close()
 		go func() {
-			defer c.Close()
 			for {
 				T = time.Now()
 				d := make([]byte, 1024)
 				_, err := c.Read(d)
 				if err != nil {
+
 					log.Printf("Error reading TCP session: %s", err)
 					break
 				}
@@ -95,9 +97,16 @@ func TcpId(addr string) {
 
 				}
 				_, err = c.Write([]byte(yearMap[int64(T.Year())] + dateMap[int64(T.Month())] + dateMap[int64(T.Day())] + dateMap[int64(T.Hour())] + dateMap[int64(T.Minute())] + dateMap[int64(T.Second())] + Bit62Adder(Add) + ":" + dateMap[int64(T.Hour())+24] + dateMap[int64(T.Minute())] + dateMap[int64(T.Second())] + Bit62Adder(Add) + RAND[r[0]] + RAND[r[1]] + RAND[r[2]] + RAND[r[3]]))
-				lock.Lock()
-				Add++
-				lock.Unlock()
+				if T.Second() < time.Now().Second() {
+					T = time.Now()
+					lock.Lock()
+					Add = 0
+					lock.Unlock()
+				} else {
+					lock.Lock()
+					Add++
+					lock.Unlock()
+				}
 				if err != nil {
 					log.Printf("Error writing TCP session: %s", err)
 					break
@@ -113,6 +122,7 @@ func TcpId(addr string) {
 			defer c.Close()
 		}()
 	}
+
 }
 
 func GetId() string {
