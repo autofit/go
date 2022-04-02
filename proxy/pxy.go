@@ -91,20 +91,22 @@ func ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
-	if Path[len(Path)-1:] == ":" {
-		Path = Path[:len(Path)-1]
+	if Path != "" {
+		if Path[len(Path)-1:] == ":" {
+			Path = Path[:len(Path)-1]
+		}
+		target, _ = url.Parse(Path)
+		log.Println(target)
+		if target == nil {
+			return
+		}
+		if r.RequestURI == "/favicon.ico" {
+			io.WriteString(w, "Request path Error")
+			return
+		}
+		proxy := httputil.NewSingleHostReverseProxy(target)
+		proxy.ServeHTTP(w, r)
 	}
-	target, _ = url.Parse(Path)
-	log.Println(target)
-	if target == nil {
-		return
-	}
-	if r.RequestURI == "/favicon.ico" {
-		io.WriteString(w, "Request path Error")
-		return
-	}
-	proxy := httputil.NewSingleHostReverseProxy(target)
-	proxy.ServeHTTP(w, r)
 }
 func ReadInitFile() {
 	var json = jsoniter.ConfigCompatibleWithStandardLibrary
