@@ -60,51 +60,41 @@ func ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	log.Println(r.RemoteAddr)
 	log.Println(r.Header.Get("Referer"), r.Header.Get("Origin"))
 	i := 0
+	Path := ""
 	if r.Header.Get("Referer") != "" {
 		path := strings.Split(strings.Split(r.Header.Get("Referer"), ".")[0], "//")[1]
-		pt := r.RequestURI
 		for _, v := range If.Remote {
-			if pt[1:] == v.Path {
-				target, _ = url.Parse(v.Host + ":" + v.Port)
-				i++
-			}
-			if path == v.Path {
-				target, _ = url.Parse(v.Host + ":" + v.Port)
+			if r.RequestURI[1:] == v.Path || path == v.Path {
+				Path = v.Host + ":" + v.Port
 				i++
 			}
 		}
 	}
 	if i == 0 {
 		if r.Header.Get("Origin") != "" {
-			pt := r.RequestURI
 			path := strings.Split(strings.Split(r.Header.Get("Origin"), ".")[0], "//")[1]
 			for _, v := range If.Remote {
-				log.Println("pt:", pt, "pt[1:] == v.Path:", pt[1:] == v.Path)
-				if pt[1:] == v.Path {
-					target, _ = url.Parse(v.Host + ":" + v.Port)
-					i++
-				}
-				if path == v.Path {
-					target, _ = url.Parse(v.Host + ":" + v.Port)
+				if r.RequestURI[1:] == v.Path || path == v.Path {
+					Path = v.Host + ":" + v.Port
 					i++
 				}
 			}
 		}
 		if i == 0 {
 			if r.Host != "" {
-				pt := r.RequestURI
 				path := strings.Split(r.Host, ".")[0]
 				for _, v := range If.Remote {
-					if pt[1:] == v.Path {
-						target, _ = url.Parse(v.Host + ":" + v.Port)
-					}
-					if path == v.Path {
-						target, _ = url.Parse(v.Host + ":" + v.Port)
+					if r.RequestURI[1:] == v.Path || path == v.Path {
+						Path = v.Host + ":" + v.Port
 					}
 				}
 			}
 		}
 	}
+	if Path[len(Path)-1:] == ":" {
+		Path = Path[:len(Path)-1]
+	}
+	target, _ = url.Parse(Path)
 	log.Println(target)
 	if target == nil {
 		return
